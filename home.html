@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CSAT.AI - Admin Dashboard</title>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link href="{{ url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/font-awesome.min.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/datepicker3.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet">
+        <link rel="shortcut icon" type="image/x-icon" href="/static/img/csat-ai-fav-icon.jpg">
+        <link rel="apple-touch-icon" href="/static/img/csat-ai-fav-icon.jpg"/>
+
+
+       <!--Custom Font-->
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+        <!--[if lt IE 9]>
+                <script src="{{ url_for('static', filename='js/html5shiv.js')}}"></script>
+                <script src="{{ url_for('static', filename='js/respond.min.js')}}"></script>
+                <![endif]-->
+        <link href="{{ url_for('static', filename='gauge/jquery-gauge.css')}}" rel="stylesheet">
+
+        <style>
+            .reportchat {
+                position: relative !important;
+                width: 20vw !important;
+                height: 20vw !important;
+                box-sizing: border-box !important;
+                float:left !important;
+                margin:20px !important;
+            }
+            .scoreTextClass{
+                top: 61%;
+                position: absolute;
+                left: 45%;
+                font-size: 14px;
+                font-weight: 700;
+            }
+            svg:not(:root){
+                overflow: visible !important;
+            }
+            .service:hover{
+                color:#3b2151;
+            }
+            .service{
+                padding:0 5px;
+                cursor: pointer;
+            }
+            .dropdown-settings li a{
+                text-decoration: none !important;
+            }
+            .userdata{
+                text-transform: capitalize;
+            }
+            a.text-primary:hover{
+                color: #fff !important;
+            }
+            a.text-primary:hover,a.text-primary:active, a.text-primary:visited, a.text-primary:focus{
+                text-decoration: none !important;
+            }
+            .padding-cust{
+                // padding: 0 2.5% 0 5.5%
+            }
+            .custom_evaluationsubscriptions_bc{
+                height:auto !important;
+                line-height:20px !important;
+                min-height: 40px;
+                margin: 0 auto;
+                vertical-align: middle;
+                display: table-cell !important;
+                padding-top: 2% !important;
+                padding-bottom: 2% !important;
+                letter-spacing: 1px;
+            }
+            .custom_evaluationsubscriptions{
+                overflow: hidden;
+                white-space: nowrap; /* Don't forget this one */
+                text-overflow: ellipsis;
+            }
+            li.parent a:hover,li.parent a:active,li.parent a:focus{
+                text-decoration: none;
+            }
+             #button1 {
+                 !important;background-color: white;
+                 !important;color: #0f0f0f;
+                 border: 1px dashed #ccc;
+                 width:200px;
+                 !important;text-align: left;
+                 position: relative;
+
+             }
+             #button2 {
+                 !important;background-color: white;
+                 !important;color: #0f0f0f;
+                 border: 1px dashed #ccc;
+                 width:350px;
+                 !important;text-align: left;
+                 position: relative;
+                 top:20px;
+                 right: 10px;
+             }
+             #car{
+                 float: right;
+                 margin: 6px 0;
+             }
+            .dropdown-menu{
+                color:black;
+            }
+        </style>
+    </head>
+
+    <body>
+        <nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar-collapse"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+
+                    <a class="navbar-brand" href="#">
+                        <img src="/static/img/logo.png" style="float: left;">
+                        &nbsp;&nbsp; CSAT.AI &nbsp;-&nbsp; Admin
+                    </a>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar collapse in" aria-expanded="true" style="">
+            <div class="profile-sidebar">
+                <div class="profile-usertitle">
+                    <div class="profile-usertitle-name">{{logininfo.name}}</div>
+                    <div class="profile-usertitle-status"><span class="indicator label-success"></span>Online</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="divider"></div>
+            <ul class="nav menu">
+                <li class="parent active">
+                    <a data-toggle="collapse" href="#sub-item-2" class="" aria-expanded="true">
+                        <em class="fa fa-dashboard fa-minus color-teal">&nbsp;</em>Scoreboard
+                        <span data-toggle="collapse" href="#sub-item-2" class="icon pull-right" aria-expanded="true"><em class="fa fa-plus fa-minus"></em>
+                        </span>
+                    </a>
+                    <ul class="children collapse in" id="sub-item-2" aria-expanded="true" style="">
+
+
+                        <li class="parent">
+                            <a data-toggle="collapse" href="#sub-item-5" class="collapsed" aria-expanded="false">
+                                <em class="fa fa-user-circle-o">&nbsp;</em>By Agent
+                                <span data-toggle="collapse" href="#sub-item-5" class="icon pull-right collapsed" style="padding-right:13px;" aria-expanded="false">
+                                    <em class="fa fa-plus"></em>
+                                </span>
+                            </a>
+                            <ul class="children collapse" id="sub-item-5" aria-expanded="false" style="height: 0px;">
+                                <li>
+                                    <a href="javascript:void(0)" class="userdataselectall text-primary pl-1" data-status=0 data-user-id="1"  >
+                                        &nbsp;<em class="fa fa-square-o padding-cust" id="userdataselectall" ></em> Select All
+                                    </a></li>
+                                <li class="divider"></li>
+                                {% for user in userlist %}
+                                <li>
+                                    <a href="javascript:void(0)" class="userdata text-primary custom_evaluationsubscriptions" data-status=0 data-user-id="{{user.0}}"  data-toggle="tooltip" title="{{user.1}}" >
+                                        &nbsp;&nbsp;<em class="fa fa-square-o padding-cust" id="checkuser{{user.0}}" ></em>
+                                        {{user.1}}
+                                    </a></li>
+                                <li class="divider"></li>
+                                {% endfor %}
+
+                            </ul>
+
+                        </li>
+
+
+                        <li class="parent">
+                            <a data-toggle="collapse" href="#sub-item-6" class="collapsed" aria-expanded="false">
+                                <em class="fa fa-th-large">&nbsp;</em>By Metrics
+                                <span data-toggle="collapse" href="#sub-item-6" class="icon pull-right collapsed" style="padding-right:13px;" aria-expanded="false">
+                                    <em class="fa fa-plus"></em>
+                                </span>
+                            </a>
+                            <ul class="children collapse" id="sub-item-6" aria-expanded="false" style="height: 0px;">
+                                <li>
+                                    <a href="javascript:void(0)" class="subscriptiondataselectall text-primary"  data-status=0 data-user-id="1"  >
+                                        &nbsp;<em class="fa fa-square-o" id="subscriptiondataselectall" ></em> Select All
+                                    </a></li>
+                                <li class="divider"></li>
+                                &nbsp;&nbsp;{%for key in evaluationsubscriptionslist %}
+
+                                <li>
+
+                                    <a href="javascript:void(0)" class="subscriptiondata text-primary custom_evaluationsubscriptions"  data-status=0 data-subscriptiondata-id="{{key}}"  data-toggle="tooltip" title="{{evaluationsubscriptionslist[key].category_name}}" >
+                                        <em class="fa fa-square-o" id="subscriptiondata{{key}}" ></em>
+                                            {{evaluationsubscriptionslist[key].category_name}}
+                                        </a>
+                                </li>
+                                <li class="divider"></li>
+                                {%endfor%}
+
+                            </ul>
+
+                        </li>
+
+
+
+                    </ul>
+                </li>
+
+                <li class="parent ">
+                    <a data-toggle="collapse" href="#sub-item-3" class="collapsed" aria-expanded="false">
+                        <em class="fa fa-cogs color-orange">&nbsp;</em>Settings
+                        <span data-toggle="collapse" href="#sub-item-3" class="icon pull-right collapsed" aria-expanded="false"><em class="fa fa-plus"></em>
+                        </span>
+                    </a>
+                    <ul class="children collapse" id="sub-item-3" aria-expanded="false" style="height: 0px;">
+                        <li><a class="" href="/company/userlist?sessionid={{session['sessionid']}}">
+                                <span class="fa fa-users">&nbsp;</span>Users
+                            </a></li>
+                        <li class="parent">
+                            <a data-toggle="collapse" href="#sub-item-4" class="collapsed" aria-expanded="false">
+                                <em class="fa fa-comments">&nbsp;</em>Channels
+                                <span data-toggle="collapse" href="#sub-item-4" class="icon pull-right collapsed" style="padding-right:13px;" aria-expanded="false">
+                                    <em class="fa fa-plus"></em>
+                                </span>
+                            </a>
+                            <ul class="children collapse" id="sub-item-4" aria-expanded="false" style="height: 0px;">
+
+                                {% for subscription in subscriptionslist %}
+
+                                <li>
+
+                                    <a class="" href="/company/setting/{{subscription.channel_id}}?sessionid={{session['sessionid']}}">
+                                        &nbsp;&nbsp;<span class="fa fa-angle-right">&nbsp;</span> {{subscription.channel_name}}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </li>
+                <li  ><a href="/company/logout?sessionid={{session['sessionid']}}"><em class="fa fa-power-off" style="color:red">&nbsp;</em>Logout</a></li>
+
+
+            </ul>
+        </div>
+        <!--/.sidebar-->
+
+        <div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+            <!--/.row-->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+
+                            {% set enrole_to_service = logininfo.enrole_to_service %}
+                            {% set service = enrole_to_service.split(';') %}
+
+                            Trend Scoreboard
+
+                            {% if logininfo.role == "ADMIN" %}
+
+                            {%else%}
+                            <a href="javascript:void(0)" style="display:none;" class="userdata" data-status=1 data-user-id="{{logininfo.user_id}}"  >
+                                <em class="fa fa-check-square-o" id="checkuser{{logininfo.user_id}}" ></em>
+                            </a>
+
+                            {%endif%}
+
+                            <span class="pull-right clickable panel-toggle panel-button-tab-left"><em class="fa fa-toggle-up"></em></span>
+
+
+
+                            {% for subscription in subscriptionslist %}
+
+                            <span class="pull-right panelcustom-toggle panel-button-tab-left" >
+                                <span  class="service" data-status=0 data-service-id="{{subscription.0}}" > &nbsp;
+                                    <em class="fa fa-square-o"  id="service{{subscription.0}}" ></em> {{subscription.1}}
+                                </span>
+
+                            </span>
+
+                            {% endfor %}
+
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-4">
+                                 <div  class="scoreLableClass text-center">24 Hours</div>
+                                <div class="reportchat" id="todaychartdiv"></div>
+                                <div id="todaychartdivScore" class="scoreTextClass">0%</div>
+                            </div>
+                        </div>
+                    <div class="container">
+                            <div class="col-md-12">
+                                <div class="col-md-4">
+                                    <div class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="button1"><label>Metrics</label>
+                                        <span class="caret"  id="car"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li><label class="container1"><input type="radio" name="checkfield" id="checkboxes"  onchange="query(this)"><span class="checkmark"></span>Query Resolved</label></li>
+                                            <li><label class="container1"><input type="radio" name="checkfield" id="checkboxes"  onchange="empathy(this)"><span class="checkmark"></span>Empathy</label></li>
+                                            <li><label class="container1"><input type="radio" name="checkfield" id="checkboxes"  onchange="wow(this)"><span class="checkmark"></span>WOW</label></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    </div>
+                                <div class="col-md-4">
+                                    <div id="button2">
+                                        <div id="reportrange" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                                        <i class="fa fa-calendar"></i>&nbsp;
+                                        <span></span> <i class="fa fa-caret-down"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </div>
+
+                            </div>
+   <canvas id="myChart"></canvas>
+
+                            </div>
+
+
+  <script>
+       let myChart = document.getElementById('myChart').getContext('2d');
+
+    let mixedChart = new Chart(myChart, {
+  type: 'bar',
+
+  data: {
+    datasets: [{
+          data:  [{% for item in query_values1 %}
+                      {{item}},
+                    {% endfor %}],
+
+        backgroundColor:getRandomColor(),   },
+
+        {
+          label:   [{% for item in user1 %}
+                      '{{item}}',
+                    {% endfor %}],
+          data: [{% for item in lastweek1 %}
+                      {{item}},
+                    {% endfor %}],
+        hidden:true,
+       lineTension: 0.1,
+    fill: false,
+    borderColor: 'red',
+    backgroundColor: 'red',
+    pointBorderColor: 'red',
+    pointBackgroundColor: 'lightgreen',
+    pointRadius: 5,
+    pointHoverRadius: 15,
+    pointHitRadius: 30,
+    pointBorderWidth: 2,
+    pointStyle: 'rect',
+
+          // Changes this dataset to become a line
+          type: 'line'
+        },{
+        label: [{% for item in user2 %}
+                      '{{item}}',
+                    {% endfor %}],
+        data:[{% for item in lastweek2 %}
+                      {{item}},
+                    {% endfor %}],
+        hidden:true,
+        lineTension: 0.1,
+    fill: false,
+    borderColor: 'purple',
+    backgroundColor: 'purple',
+    pointBorderColor: 'purple',
+    pointBackgroundColor: 'lightgreen',
+    pointRadius: 5,
+    pointHoverRadius: 15,
+    pointHitRadius: 30,
+    pointBorderWidth: 2,
+
+        type:'line'
+    },
+        {
+            label:"average",
+        data:[{% for item in lastweek3 %}
+                      {{item}},
+                    {% endfor %}],
+        labels:['a','b'],
+        scaleShowLabels:false,
+        lineTension: 0.1,
+    fill: false,
+    borderColor: 'green',
+    backgroundColor: 'green',
+    pointBorderColor: 'green',
+    pointBackgroundColor: 'lightgreen',
+    pointRadius: 5,
+    pointHoverRadius: 15,
+    pointHitRadius: 30,
+    pointBorderWidth: 2,
+            type:'line'
+        },
+    ],
+    labels: [{% for item in labels4 %}
+                  "{{item}}",
+              {% endfor %}],
+  },
+
+         options:{
+
+        legend: {
+           labels: {
+                boxWidth:80,
+               pointStyle:'dash',
+               filter: function(legendItem, chartData) {
+                if (legendItem.datasetIndex === 0) {
+                  return false;
+                }
+               return true;
+               }
+            }
+        },
+      scales: {
+    yAxes: [
+        {
+
+        position:'left',
+            scaleLabel: {
+        display: true,
+        labelString: 'CSAT Score',},
+        ticks:{
+            min:20,max:100,stepSize:20
+        },
+        },
+
+        {
+        id:'No of interactions',
+        position:'right',
+           scaleLabel: {
+        display: true,
+        labelString: 'interactions',},
+        ticks:{min:100,max:400},
+
+    }
+
+    ],
+      xAxes:[],
+      },
+        }
+});
+    function removeData2() {
+        let vas=mixedChart.data.datasets[2].data
+         vas.splice(0,vas.length);
+    }
+function removeData1() {
+        let vas=mixedChart.data.datasets[1].data;
+         vas.splice(0,vas.length);
+         mixedChart.update();
+    }
+function addData1() {
+        let abc = [{% for item in values1 %}
+            {{item}},
+        {% endfor %}]
+        mixedChart.data.datasets[1].data = abc;
+        mixedChart.update();
+    }
+function addData2() {
+       let abc=[{% for item in values2 %}
+                      {{item}},
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=abc;
+                         mixedChart.update();
+    }
+function addtoday(){
+         mixedChart.data.datasets[0].data=[{% for item in random_today %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in random_today1 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in random_today2 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in random_today3 %}
+            {{item}},
+        {% endfor %}]
+ mixedChart.data.labels=[{% for item in labels1 %}
+                      "{{item}}",
+                    {% endfor %}]
+                         mixedChart.update();
+        }
+function removetoday(){
+         let abc=[{% for item in labels2 %}
+                      {{item}},
+                    {% endfor %}]
+         mixedChart.data.labels=abc;
+          mixedChart.data.labels=[{% for item in labels2 %}
+                  "{{item}}",
+              {% endfor %}]
+                         mixedChart.update();
+        }
+
+        function addyesterday(){
+        mixedChart.data.datasets[0].data=[{% for item in yesterday %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in yesterday1 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in yesterday2 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in yesterday3 %}
+            {{item}},
+        {% endfor %}]
+ mixedChart.data.labels=[{% for item in labels3 %}
+                      "{{item}}",
+                    {% endfor %}]
+                         mixedChart.update();
+        }
+
+         function lastweek1(){
+         mixedChart.data.datasets[0].data=[{% for item in query_values1 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in lastweek1 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in lastweek2 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.datasets[3].data=[
+
+             {% for item in lastweek3 %}
+            {{item}},
+        {% endfor %}]
+         mixedChart.data.labels=[{% for item in labels4 %}
+                      "{{item}}",
+                    {% endfor %}];
+
+                         mixedChart.update();
+        }
+
+        function last30days1(){
+  mixedChart.data.datasets[0].data=[{% for item in query_values1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in last30days1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in last30days2 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in last30days3 %}
+                      "{{item}}",
+                    {% endfor %}]
+ mixedChart.data.labels=[{% for item in labels5 %}
+                      "{{item}}",
+                    {% endfor %}];
+
+                         mixedChart.update();
+        }
+ function presentmonth1(){
+ mixedChart.data.datasets[0].data=[{% for item in query_values1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in presentmonth1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in presentmonth2 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in presentmonth3 %}
+                      "{{item}}",
+                    {% endfor %}]
+ mixedChart.data.labels=[{% for item in labels6 %}
+                      "{{item}}",
+                    {% endfor %}];
+
+                         mixedChart.update();
+        }
+
+        function lastmonth1(){
+  mixedChart.data.datasets[0].data=[{% for item in query_values1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in query_values2 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in query_values3 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in query_values %}
+                      "{{item}}",
+                    {% endfor %}]
+ mixedChart.data.labels=[{% for item in labels7 %}
+                      "{{item}}",
+                    {% endfor %}];
+
+                         mixedChart.update();
+        }
+
+
+        function custom_range(){
+  mixedChart.data.datasets[0].data=[{% for item in custom_values %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in query_values2 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in query_values3 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[3].data=[{% for item in query_values %}
+                      "{{item}}",
+                    {% endfor %}]
+ mixedChart.data.labels=[{% for item in custom_labels %}
+                      "{{item}}",
+                    {% endfor %}];
+
+                         mixedChart.update();
+        }
+
+        function query1() {
+        mixedChart.data.datasets[0].data=[{% for item in query_resolved %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in query_resolved1 %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[2].data=[{% for item in query_resolved2 %}
+                      "{{item}}",
+                    {% endfor %}]
+        mixedChart.data.datasets[3].data=[]
+        mixedChart.data.labels=[{% for item in query_resolved_labels %}
+                      "{{item}}",
+                    {% endfor %}]
+
+                                mixedChart.update();
+
+
+        }
+
+         function empathy1() {
+        mixedChart.data.datasets[0].data=[{% for item in empathy %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in empathy1 %}
+                      "{{item}}",
+                    {% endfor %}]
+          mixedChart.data.datasets[2].data=[{% for item in empathy2 %}
+                      "{{item}}",
+                    {% endfor %}]
+        mixedChart.data.datasets[3].data=[]
+        mixedChart.data.labels=[{% for item in empathy_labels %}
+                      "{{item}}",
+                    {% endfor %}]
+
+                                mixedChart.update();
+
+
+        }
+
+
+        function wow1() {
+        mixedChart.data.datasets[0].data=[{% for item in wow %}
+                      "{{item}}",
+                    {% endfor %}]
+         mixedChart.data.datasets[1].data=[{% for item in wow1 %}
+                      "{{item}}",
+                    {% endfor %}]
+          mixedChart.data.datasets[2].data=[{% for item in wow2 %}
+                      "{{item}}",
+                    {% endfor %}]
+        mixedChart.data.datasets[3].data=[]
+        mixedChart.data.labels=[{% for item in wow_labels %}
+                      "{{item}}",
+                    {% endfor %}]
+
+                                mixedChart.update();
+
+
+        }
+
+       function getRandomColor() {
+           var color = 'rgba(255, 99, 132, 0.6)';
+          return color;
+}
+
+
+
+
+
+
+
+
+</script>
+                <script>
+function query(checkboxElem) {
+  if (checkboxElem.checked) {
+    query1();
+  } else {
+    removetoday();
+  }
+}
+
+function empathy(checkboxElem) {
+  if (checkboxElem.checked) {
+    empathy1();
+  } else {
+    removetoday();
+  }
+}
+
+function wow(checkboxElem) {
+  if (checkboxElem.checked) {
+    wow1();
+  } else {
+    removetoday();
+  }
+}
+
+
+
+
+
+</script>
+                    <style>
+
+/* The container */
+.container1 {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container1 input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 3px;
+    height: 20px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container1:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+label:hover{
+    background-color: lightblue;
+}
+
+/* When the radio button is checked, add a blue background */
+.container1 input:checked ~ .checkmark {
+    background-color:  lightblue;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container1 input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container1 .checkmark:after {
+ 	top: 6px;
+	left: 9px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: white;
+}
+
+                    </style>
+
+
+
+
+
+
+<script>
+
+   $(function () {
+    var start = moment().subtract(6, 'days');
+    var end = moment();
+
+
+    function cb(start, end) {
+        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+
+    }
+
+    $('#reportrange').daterangepicker({
+        startDate: start,
+        endDate: end,
+        minDate: moment().subtract(365, 'days'),
+        maxDate: moment(),
+        ranges: {
+            'Today': [moment(), moment(),],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days'),],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        },
+    },
+
+        cb)
+    cb(start, end);
+});
+$('#reportrange').on('apply.daterangepicker', function (ev, picker) {
+
+
+    if (picker.chosenLabel == "Today") {
+        addtoday();
+    }
+    if (picker.chosenLabel == "Yesterday") {
+        addyesterday();
+    }
+    if (picker.chosenLabel == "Last 7 Days") {
+        lastweek1();
+    }
+    if (picker.chosenLabel == "Last 30 Days") {
+        last30days1();
+    }
+    if (picker.chosenLabel == "This Month") {
+        presentmonth1();
+    }
+    if (picker.chosenLabel == "Last Month") {
+        lastmonth1();
+    }
+   if(picker.startDate == toEpochDate({% for item in custom_values1 %}
+                      "{{item}}",
+                    {% endfor %}) && toEpochDate(picker.endDate) == toEpochDate({% for item in custom_values2 %}
+                      "{{item}}",
+                    {% endfor %})) {
+
+        custom_range();
+    }
+    if(picker.startDate == toEpochDate("10/02/2018") && toEpochDate(picker.endDate) == toEpochDate("10/20/2018")) {
+
+        addyesterday();
+    }
+});
+function toEpochDate(date){
+    var d = new Date(date);
+    d.setHours(0,0,0,0);
+    return d.getTime();
+}
+</script>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+
+
+        </div>
+        <!--/.main-->
+
+
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='gauge/jquery-gauge.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/chart.min.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/chart-data.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/easypiechart.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/easypiechart-data.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap-datepicker.js')}}"></script>
+        <script src="{{ url_for('static', filename='js/custom.js')}}"></script>
+        <!-- Chart code -->
+
+
+        <script>
+
+                    // first example
+
+
+                    // second example
+                    $('#todaychartdiv').gauge({
+            values: {
+            0 : '0',
+                    20: '20',
+                    40: '40',
+                    60: '60',
+                    80: '80',
+                    100: '100'
+            },
+                    colors: {
+                    0 : '#b50104',
+                            19.9 : '#fff',
+                            20.1 : '#d18a3c',
+                            39.9 : '#fff',
+                            40.1 : '#ded925',
+                            59.9 : '#fff',
+                            60.1: '#78a934',
+                            79.9 : '#fff',
+                            80: '#34ab5b'
+                    },
+                    angles: [
+                            150,
+                            390
+                    ],
+                    lineWidth: 20,
+                    arrowWidth: 10,
+                    arrowColor: '#666',
+                    inset:true,
+                    animationSpeed:23,
+                    value: {{graphreport.today}}
+            });
+                    $("#todaychartdivScore").html({{graphreport.today}} + " %")
+
+                    $('#weeklychartdiv').gauge({
+            values: {
+            0 : '0',
+                    20: '20',
+                    40: '40',
+                    60: '60',
+                    80: '80',
+                    100: '100'
+            },
+                    colors: {
+                    0 : '#b50104',
+                            19.9 : '#fff',
+                            20.1 : '#d18a3c',
+                            39.9 : '#fff',
+                            40.1 : '#ded925',
+                            59.9 : '#fff',
+                            60.1: '#78a934',
+                            79.9 : '#fff',
+                            80: '#34ab5b'
+                    },
+                    angles: [
+                            150,
+                            390
+                    ],
+                    lineWidth: 20,
+                    arrowWidth: 10,
+                    arrowColor: '#666',
+                    inset:true,
+                    value: {{graphreport.weekly}}
+            });
+                    $("#weeklychartdivScore").html({{graphreport.weekly}} + " %")
+
+                    $('#monthlychartdiv').gauge({
+            values: {
+            0 : '0',
+                    20: '20',
+                    40: '40',
+                    60: '60',
+                    80: '80',
+                    100: '100'
+            },
+                    colors: {
+                    0 : '#b50104',
+                            19.9 : '#fff',
+                            20.1 : '#d18a3c',
+                            39.9 : '#fff',
+                            40.1 : '#ded925',
+                            59.9 : '#fff',
+                            60.1: '#78a934',
+                            79.9 : '#fff',
+                            80: '#34ab5b'
+                    },
+                    angles: [
+                            150,
+                            390
+                    ],
+                    lineWidth: 20,
+                    arrowWidth: 10,
+                    arrowColor: '#666',
+                    inset:true,
+                    value: {{graphreport.monthly}}
+            });
+                    $("#monthlychartdivScore").html({{graphreport.monthly}} + " %");
+                    function resetgauge(divid, scorevalue){
+                    var gauge = new Gauge($('#' + divid), {
+                    values: {
+                    0 : '0',
+                            20: '20',
+                            40: '40',
+                            60: '60',
+                            80: '80',
+                            100: '100'
+                    },
+                            colors: {
+                            0 : '#b50104',
+                                    19.9 : '#fff',
+                                    20.1 : '#d18a3c',
+                                    39.9 : '#fff',
+                                    40.1 : '#ded925',
+                                    59.9 : '#fff',
+                                    60.1: '#78a934',
+                                    79.9 : '#fff',
+                                    80: '#34ab5b'
+                            },
+                            angles: [
+                                    150,
+                                    390
+                            ],
+                            lineWidth: 20,
+                            arrowWidth: 10,
+                            arrowColor: '#666',
+                            inset:true,
+                            value: scorevalue
+                    });
+                            $("#" + divid + "Score").html(scorevalue + " %")
+                    }
+
+
+        </script>
+
+
+
+
+    </body>
+
+
+</html>
